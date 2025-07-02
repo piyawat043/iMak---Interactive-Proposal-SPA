@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="th" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iMak (Maker Customs OS) - A Revolution in CNC</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony (Light Grey, Dark Grey, Professional Blue Accent) -->
+    <!-- Application Structure Plan: A single-page, narrative scrolling application designed to tell the iMak story. It starts with the problem (complexity of CNC), presents the solution (iMak and its features), proves its effectiveness with an interactive comparison chart (42 vs 3 actions), shows the life-changing impact, introduces the visionary creator, and ends with a clear proposal and FAQ. This structure was chosen to build a compelling case, create an emotional connection, and lead the user logically to the call to action, which is more effective than a standard report layout. -->
+    <!-- Visualization & Content Choices: 
+    - Problem: Infographic-style text and a Chart.js horizontal bar chart to visually shock the user with the "42 vs 3 Actions" comparison. Goal: Compare. Method: Chart.js Canvas.
+    - Solution/Features: Interactive card gallery using user-provided images. Goal: Inform/Organize. Method: HTML/CSS Grid with hover effects.
+    - Impact: Grid of icons (Unicode) and text. Goal: Inform. Method: HTML/CSS Flexbox.
+    - FAQ: Interactive accordion/toggle. Goal: Organize/Inform. Method: HTML/CSS/JS.
+    - Justification: These choices prioritize interactivity and visual storytelling to make complex information digestible and engaging, adhering to the NO SVG/Mermaid constraint. The structure supports the narrative flow from problem to solution to vision. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: #f4f4f5; /* Light Grey */
+            color: #1f2937; /* Dark Grey */
+        }
+        .section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .accent-blue {
+            color: #3b82f6;
+        }
+        .bg-accent-blue {
+            background-color: #3b82f6;
+        }
+        .border-accent-blue {
+            border-color: #3b82f6;
+        }
+        .faq-question::after {
+            content: '▼';
+            float: right;
+            transition: transform 0.3s;
+        }
+        .faq-question.open::after {
+            transform: rotate(180deg);
+        }
+        .chart-container {
+            position: relative; 
+            height: 250px; 
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+         @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header & Navigation -->
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-3">
+            <div class="flex justify-between items-center">
+                <a href="#hero" class="text-2xl font-bold accent-blue">iMak</a>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#problem" class="hover:text-blue-500">ปัญหา</a>
+                    <a href="#solution" class="hover:text-blue-500">ทางออก</a>
+                    <a href="#impact" class="hover:text-blue-500">ผลกระทบ</a>
+                    <a href="#vision" class="hover:text-blue-500">วิสัยทัศน์</a>
+                    <a href="#proposal" class="hover:text-blue-500">ข้อเสนอ</a>
+                    <a href="#faq" class="hover:text-blue-500">FAQ</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="hero" class="min-h-screen flex items-center bg-white">
+            <div class="container mx-auto px-6 text-center">
+                <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-4 animate-fade-in-down">
+                    จาก <span class="accent-blue">42</span> การกระทำที่ซับซ้อน<br>สู่ <span class="accent-blue">3</span> การกระทำที่เรียบง่าย
+                </h1>
+                <p class="text-xl md:text-2xl text-gray-600 mb-8">
+                    นี่ไม่ใช่แค่การอัปเกรด แต่มันคือการปฏิวัติกระบวนการทำงาน CNC ทั้งระบบ
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+                    <a href="https://piyawat043.github.io/MakerCustoms-CNC-OS/" target="_blank" class="bg-accent-blue text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition duration-300 text-lg shadow-lg animate-pulse">
+                        🚀 สำรวจระบบควบคุมของจริง (Live System)
+                    </a>
+                     <a href="#problem" class="text-gray-700 font-semibold py-3 px-6 rounded-full hover:bg-gray-200 transition duration-300">
+                        ค้นพบเรื่องราว 👇
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- The Problem -->
+        <section id="problem" class="py-20 section">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold">ภาระที่มองไม่เห็นของระบบเดิม</h2>
+                    <p class="text-lg text-gray-600 mt-2">ในการตั้งค่างานเพียงชิ้นเดียว ผู้ใช้งานต้องเผชิญกับอะไรบ้าง?</p>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-lg">
+                   <p class="text-center text-xl md:text-2xl mb-6">
+                        ผู้ใช้งานต้องเผชิญหน้ากับการกระทำ (Action) มากกว่า <strong class="accent-blue text-4xl">42 ครั้ง</strong> ซึ่งหมายถึง 42 ครั้งของความเครียด, การใช้สมาธิสูงสุด, และความเสี่ยงที่จะเกิดความผิดพลาด
+                    </p>
+                    <div class="chart-container">
+                        <canvas id="actionsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- The Solution -->
+        <section id="solution" class="py-20 bg-white section">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold">คำตอบของเรา: Maker Customs OS (iMak)</h2>
+                    <p class="text-lg text-gray-600 mt-2">ปรัชญาของเราคือ "ถ้าการเริ่มต้นง่าย ทุกอย่างก็จะถูกปลดล็อก"</p>
+                </div>
+                 <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-gray-100 p-6 rounded-lg shadow-sm hover:shadow-xl transition-shadow duration-300">
+                        <h3 class="text-xl font-bold mb-2 accent-blue">สำหรับทุกคน</h3>
+                        <p>เราออกแบบระบบสำหรับผู้ใช้ทุกระดับ ตั้งแต่มือใหม่ (ด้วยระบบนำทาง), มืออาชีพ (ด้วยโหมดสร้าง Shortcut) ไปจนถึงคนที่ไม่ถนัดคอมพิวเตอร์ (ด้วยระบบปุ่มกดภายนอก)</p>
+                    </div>
+                    <div class="bg-gray-100 p-6 rounded-lg shadow-sm hover:shadow-xl transition-shadow duration-300">
+                        <h3 class="text-xl font-bold mb-2 accent-blue">ประสิทธิภาพ 25 เท่า</h3>
+                        <p>ลดจำนวนการกระทำ, เพิ่มความเร็วต่อ Action, และลดภาระของสมอง (Cognitive Load) เพื่อปลดปล่อยศักยภาพที่แท้จริงของผู้ใช้งาน</p>
+                    </div>
+                    <div class="bg-gray-100 p-6 rounded-lg shadow-sm hover:shadow-xl transition-shadow duration-300">
+                        <h3 class="text-xl font-bold mb-2 accent-blue">สถาปัตยกรรมแบบปิด</h3>
+                        <p>เรารวมฮาร์ดแวร์และซอฟต์แวร์เป็นหนึ่งเดียว (ไม่ผ่าน USB) และครอบทับ Windows เพื่อความเสถียรสูงสุดและป้องกันการคัดลอก</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- The Impact -->
+        <section id="impact" class="py-20 section">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold">ผลกระทบ 25 เท่า: มากกว่าความเร็ว คือการปฏิวัติ 7 ด้าน</h2>
+                </div>
+                 <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+                    <div>
+                        <div class="text-4xl accent-blue mb-2">🏆</div>
+                        <h4 class="font-bold text-lg">ความมั่นใจ</h4>
+                        <p>เปลี่ยนผู้ปฏิบัติงานให้เป็นผู้ควบคุมเทคโนโลยีที่มั่นใจในผลงาน</p>
+                    </div>
+                     <div>
+                        <div class="text-4xl accent-blue mb-2">⏳</div>
+                        <h4 class="font-bold text-lg">เวลาในชีวิต</h4>
+                        <p>คืนเวลาที่เสียไปกับงานซ้ำซ้อนเพื่อพัฒนาทักษะที่สร้างสรรค์กว่า</p>
+                    </div>
+                    <div>
+                        <div class="text-4xl accent-blue mb-2">🧠</div>
+                        <h4 class="font-bold text-lg">สุขภาพจิต</h4>
+                        <p>ลดความเครียดและความเหนื่อยล้าจากการทำงานที่ต้องใช้สมาธิสูงสุด</p>
+                    </div>
+                     <div>
+                        <div class="text-4xl accent-blue mb-2">🏢</div>
+                        <h4 class="font-bold text-lg">องค์กร</h4>
+                        <p>สร้างมาตรฐานการทำงานที่ชัดเจน มือใหม่เรียนรู้ได้ในเวลาอันสั้น</p>
+                    </div>
+                 </div>
+            </div>
+        </section>
+
+        <!-- The Visionary -->
+        <section id="vision" class="py-20 bg-white section">
+            <div class="container mx-auto px-6 text-center">
+                 <h2 class="text-3xl md:text-4xl font-bold mb-4">"ผมยินดีให้คุณ...ยืนบนไหล่ของผม"</h2>
+                 <p class="max-w-3xl mx-auto text-lg text-gray-600 mb-8">
+                    ผมเชื่อในความสามารถของมนุษย์ครับ สิ่งที่ทำให้ผมมาถึงจุดนี้ได้... เพราะผม.. ‘ยืนบนไหล่ของยักษ์’ พวกยักษ์..ผลักดันผม ให้สร้างเครื่องมือนี้ขึ้นมา เพราะถ้ามนุษย์มีเครื่องมือที่ดี... พวกเขาจะไปได้ไกล.. ไกลกว่าที่ตัวเองเคยคิดไว้ด้วยซ้ำ ผมยินดีให้คุณ.. ‘ยืนบนไหล่ของผม’ ด้วยเครื่องมือนี้.. มันจะปลดล็อกศักยภาพ และผลักดันคุณ...ให้ก้าวไปไกลกว่าเดิม
+                 </p>
+                 <p class="font-bold">ปิยวัฒน์ ทองจันทร์ (ไบรอั้น)</p>
+                 <p class="text-sm text-gray-500">ผู้พัฒนา Maker Customs OS</p>
+            </div>
+        </section>
+        
+        <!-- The Proposal -->
+        <section id="proposal" class="py-20 section">
+             <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold">ข้อเสนอความร่วมมือ (Phase 1)</h2>
+                    <p class="text-lg text-gray-600 mt-2">นี่ไม่ใช่แค่การขอทุน แต่คือการเสนอ "ความเป็นหุ้นส่วน" เพื่อสร้างอนาคตร่วมกัน</p>
+                </div>
+                 <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8">
+                     <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="text-xl font-bold accent-blue mb-3">เป้าหมายโครงการ</h4>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li>พัฒนา "ระบบที่สอนตัวเองได้" ให้สมบูรณ์</li>
+                                <li>สร้าง "เครื่องต้นแบบสาธิต" ที่ทำงานได้ครบทุกฟังก์ชัน</li>
+                                <li>พิสูจน์แนวคิดและประเมินความเป็นไปได้ในการทำงานร่วมกัน</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="text-xl font-bold accent-blue mb-3">สิ่งที่ต้องการ</h4>
+                             <ul class="list-disc list-inside space-y-2">
+                                <li>เงินทุนสนับสนุน **500,000 บาท**</li>
+                                 <li>ระยะเวลาโครงการ **3-4 เดือน**</li>
+                                 <li>การจัดการด้านสิทธิบัตรโดยไทยซัมมิท เพื่อเป็นเกราะป้องกันเทคโนโลยี</li>
+                            </ul>
+                        </div>
+                     </div>
+                      <div class="mt-8 border-t pt-6">
+                          <h4 class="text-xl font-bold accent-blue mb-3">ข้อความจากผู้สร้าง</h4>
+                          <p class="text-gray-700">ผมมาจากต่างจังหวัด ไม่เคยทำงานกับองค์กรใหญ่ สไตล์การพูดหรือการทำงานของผมอาจจะแตกต่างไปบ้าง แต่ผมยินดีและพร้อมที่จะรับฟังและปรับปรุงเสมอ เพราะสิ่งที่ผมแคร์ที่สุด คือการได้เห็นสิ่งที่ผมสร้าง มันถูกนำไปใช้จริง และเป็นประโยชน์กับทุกคน โดยเฉพาะการนำไปใช้ในงานด้านการศึกษา เพื่อให้เด็กไทยเข้าถึง CNC ได้ง่ายขึ้นครับ</p>
+                      </div>
+                 </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section id="faq" class="py-20 bg-white section">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl font-bold text-center mb-12">คำถามที่พบบ่อย (FAQ)</h2>
+                <div class="max-w-3xl mx-auto space-y-4" id="faq-container">
+                    <!-- FAQ items will be inserted here by JS -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-6">
+        <div class="container mx-auto px-6 text-center">
+            <p>&copy; 2025 iMak (Maker Customs OS) by Piyawat Thongchan. All Rights Reserved.</p>
+        </div>
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Intersection Observer for scroll animations
+            const sections = document.querySelectorAll('.section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+
+            // Chart.js implementation
+            const ctx = document.getElementById('actionsChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['ระบบ iMak', 'ระบบเดิม'],
+                    datasets: [{
+                        label: 'จำนวน Action โดยประมาณ',
+                        data: [3, 42],
+                        backgroundColor: [
+                            'rgba(59, 130, 246, 0.7)',
+                            'rgba(239, 68, 68, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(59, 130, 246, 1)',
+                            'rgba(239, 68, 68, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                             callbacks: {
+                                label: function(context) {
+                                    return ` ${context.raw} ครั้ง`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                             ticks: {
+                                font: {
+                                    family: "'Sarabun', sans-serif",
+                                }
+                            }
+                        },
+                        y: {
+                             ticks: {
+                                font: {
+                                    family: "'Sarabun', sans-serif",
+                                    size: 14
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // FAQ Data and Logic
+            const faqData = [
+                {
+                    question: "ระบบนี้เหมาะสำหรับใคร? มือใหม่? มืออาชีพ? หรือคนที่ไม่ถนัดคอมพิวเตอร์?",
+                    answer: "เราใส่ใจคนทุกกลุ่มอย่างเท่าเทียมกันครับ นี่คือหัวใจที่แท้จริงของเรา<br><ul><li class='ml-4 list-disc'><b>สำหรับมือใหม่:</b> เราทำให้ 'การเริ่มต้น' ง่ายที่สุด ด้วยภาพ, วิดีโอ, และระบบนำทาง</li><li class='ml-4 list-disc'><b>สำหรับมืออาชีพ:</b> ระบบจะอนุญาตให้คุณเข้าสู่ 'โหมดมืออาชีพ' ที่ลื่นไหล และให้อิสระในการสร้าง Shortcut ของตัวเอง</li><li class='ml-4 list-disc'><b>สำหรับคนที่ไม่คุ้นเคยกับคอมพิวเตอร์:</b> เรามีระบบปุ่มกดภายนอก ที่สามารถสร้างขึ้นมาโดยเฉพาะได้ เพราะเราเชื่อว่า 'เทคโนโลยีที่ดีต้องเป็นมิตรกับทุกคน'</li></ul>"
+                },
+                {
+                    question: "ระบบนี้แตกต่างจาก CNC ทั่วไปอย่างไร?",
+                    answer: "หัวใจของเราคือปรัชญา 'ถ้าการเริ่มต้นง่าย ทุกอย่างก็จะถูกปลดล็อก' เราทุ่มเททั้งหมดเพื่อทำลายกำแพงความซับซ้อนในการเริ่มต้น (Setup) และเมื่อมันง่าย... มันจะปลดปล่อยความคิดสร้างสรรค์ทั้งหมดออกมา"
+                },
+                 {
+                    question: "ทำไมถึงใช้จอยเกมควบคุม? มันจะทนทานเหรอ?",
+                    answer: "เพราะจอยเกมคือเทคโนโลยีที่ถูกพัฒนาจนมีคุณภาพสูงและเข้าถึงง่าย เรามีตัวเลือกให้ตามความต้องการและงบประมาณ ตั้งแต่เกรดสำหรับนัก DIY ไปจนถึงเกรดสำหรับโรงงานอุตสาหกรรม"
+                },
+                {
+                    question: "เบื้องหลังเทคโนโลยีนี้มีอะไรพิเศษ?",
+                    answer: "เราสร้าง 'สถาปัตยกรรมแบบปิดที่สมบูรณ์' โดยรวมฮาร์ดแวร์และซอฟต์แวร์เข้าเป็นหนึ่งเดียวกันโดยไม่ผ่าน USB เพื่อความเสถียรสูงสุดและป้องกันการคัดลอก จากนั้นเราครอบและปรับแต่ง Windows ใหม่ทั้งหมด เพื่อให้พลังทั้งหมดของคอมพิวเตอร์ถูกใช้เพื่องาน CNC เพียงอย่างเดียว"
+                },
+                {
+                    question: "PiyawatZone หรือปุ่ม 'ยืนบนไหล่ของผม' คืออะไร?",
+                    answer: "มันคือ 'คลังสมอง' และ 'หัวใจ' ของโปรเจกต์นี้ เป็นฐานความรู้ที่มีชีวิต ที่รวบรวมเทคนิคและปรัชญาทั้งหมดของผมในรูปแบบวิดีโอ มันคือคำมั่นสัญญาว่าผมจะมอบทุกสิ่งที่ผมรู้ให้กับคุณ"
+                },
+                 {
+                    question: "เป้าหมายสูงสุดของโปรเจกต์นี้คืออะไร?",
+                    answer: "คือการ 'สร้างมรดก' ที่จะคงอยู่ตลอดไป ผมต้องการสร้างเครื่องมือและองค์ความรู้ที่จะช่วยยกระดับวงการอุตสาหกรรมของประเทศ และทำให้เด็กไทยและคนรุ่นใหม่ได้เข้าถึงเทคโนโลยีที่ดีที่สุด"
+                }
+            ];
+
+            const faqContainer = document.getElementById('faq-container');
+            faqData.forEach(item => {
+                const faqItem = document.createElement('div');
+                faqItem.className = 'border border-gray-200 rounded-lg';
+                
+                const questionButton = document.createElement('button');
+                questionButton.className = 'faq-question w-full text-left p-4 font-semibold focus:outline-none';
+                questionButton.textContent = item.question;
+                
+                const answerDiv = document.createElement('div');
+                answerDiv.className = 'faq-answer hidden p-4 border-t border-gray-200 text-gray-700';
+                answerDiv.innerHTML = item.answer;
+                
+                faqItem.appendChild(questionButton);
+                faqItem.appendChild(answerDiv);
+                faqContainer.appendChild(faqItem);
+                
+                questionButton.addEventListener('click', () => {
+                    questionButton.classList.toggle('open');
+                    const answer = questionButton.nextElementSibling;
+                    if (answer.classList.contains('hidden')) {
+                        answer.classList.remove('hidden');
+                    } else {
+                        answer.classList.add('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
