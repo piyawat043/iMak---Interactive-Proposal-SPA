@@ -3,84 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iMak (Maker Customs OS) - A Revolution in CNC</title>
+    <title>iMak - ข้อเสนอโครงการปฏิวัติวงการ CNC</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Calm Harmony (Light Grey, Dark Grey, Professional Blue Accent) -->
-    <!-- Application Structure Plan: A single-page, narrative scrolling application designed to tell the iMak story. It starts with the problem (complexity of CNC), presents the solution (iMak and its features), proves its effectiveness with an interactive comparison chart (42 vs 3 actions), shows the life-changing impact, introduces the visionary creator, and ends with a clear proposal and FAQ. This structure was chosen to build a compelling case, create an emotional connection, and lead the user logically to the call to action, which is more effective than a standard report layout. -->
-    <!-- Visualization & Content Choices: 
-    - Problem: Infographic-style text and a Chart.js horizontal bar chart to visually shock the user with the "42 vs 3 Actions" comparison. Goal: Compare. Method: Chart.js Canvas.
-    - Solution/Features: Interactive card gallery using user-provided images. Goal: Inform/Organize. Method: HTML/CSS Grid with hover effects.
-    - Impact: Grid of icons (Unicode) and text. Goal: Inform. Method: HTML/CSS Flexbox.
-    - FAQ: Interactive accordion/toggle. Goal: Organize/Inform. Method: HTML/CSS/JS.
-    - Justification: These choices prioritize interactivity and visual storytelling to make complex information digestible and engaging, adhering to the NO SVG/Mermaid constraint. The structure supports the narrative flow from problem to solution to vision. -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony (Light Gray, Deep Blue, Charcoal) -->
+    <!-- Application Structure Plan: A single-page, narrative scrolling journey. The video section is updated to feature the main deep-dive video and a new one for the vacuum system, providing a more focused and professional presentation. -->
+    <!-- Visualization & Content Choices: The key "visualization" is now the dual embedded YouTube videos, supported by focused image galleries and informational text blocks. This provides options for different levels of engagement. No SVG/Mermaid used. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
-            font-family: 'Sarabun', sans-serif;
-            background-color: #f4f4f5; /* Light Grey */
-            color: #1f2937; /* Dark Grey */
+            font-family: 'Kanit', sans-serif;
+            background-color: #f7f7f7;
+            color: #333;
         }
-        .section {
+        .fade-in {
             opacity: 0;
             transform: translateY(20px);
             transition: opacity 0.6s ease-out, transform 0.6s ease-out;
         }
-        .section.visible {
+        .fade-in.is-visible {
             opacity: 1;
             transform: translateY(0);
         }
-        .accent-blue {
-            color: #3b82f6;
+        .modal {
+            transition: opacity 0.25s ease;
         }
-        .bg-accent-blue {
-            background-color: #3b82f6;
+        .gallery-item {
+            @apply bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300;
         }
-        .border-accent-blue {
-            border-color: #3b82f6;
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 */
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            background: #000;
+            @apply rounded-lg shadow-2xl;
         }
-        .faq-question::after {
-            content: '▼';
-            float: right;
-            transition: transform 0.3s;
-        }
-        .faq-question.open::after {
-            transform: rotate(180deg);
-        }
-        .chart-container {
-            position: relative; 
-            height: 250px; 
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            max-width: 800px;
+            height: 100%;
+        }
+        .video-short-container {
+            width: 100%;
+            max-width: 320px; /* Max width for a phone-like ratio */
             margin-left: auto;
             margin-right: auto;
-        }
-         @media (min-width: 768px) {
-            .chart-container {
-                height: 350px;
-            }
+            aspect-ratio: 9 / 16;
         }
     </style>
 </head>
-<body class="antialiased">
+<body class="bg-gray-50 text-gray-800">
 
-    <!-- Header & Navigation -->
-    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
-        <nav class="container mx-auto px-6 py-3">
-            <div class="flex justify-between items-center">
-                <a href="#hero" class="text-2xl font-bold accent-blue">iMak</a>
-                <div class="hidden md:flex space-x-8">
-                    <a href="#problem" class="hover:text-blue-500">ปัญหา</a>
-                    <a href="#solution" class="hover:text-blue-500">ทางออก</a>
-                    <a href="#impact" class="hover:text-blue-500">ผลกระทบ</a>
-                    <a href="#vision" class="hover:text-blue-500">วิสัยทัศน์</a>
-                    <a href="#proposal" class="hover:text-blue-500">ข้อเสนอ</a>
-                    <a href="#faq" class="hover:text-blue-500">FAQ</a>
-                </div>
+    <!-- Header -->
+    <header id="header" class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <div>
+                <img src="logo_imak.jpg" alt="iMak Logo" class="h-10">
             </div>
+            <div class="hidden md:flex space-x-8">
+                <a href="#innovation" class="hover:text-blue-600 transition">นวัตกรรม</a>
+                <a href="#video" class="hover:text-blue-600 transition">ชมของจริง</a>
+                <a href="#gallery" class="hover:text-blue-600 transition">แกลเลอรี</a>
+                <a href="#vision" class="hover:text-blue-600 transition">วิสัยทัศน์</a>
+                <a href="#proposal" class="hover:text-blue-600 transition">ข้อเสนอ</a>
+                <a href="#faq" class="hover:text-blue-600 transition">FAQ</a>
+            </div>
+            <a href="https://piyawat043.github.io/MakerCustoms-CNC-OS/" target="_blank" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">สัมผัสระบบควบคุมจริง</a>
         </nav>
     </header>
 
@@ -88,288 +82,321 @@
         <!-- Hero Section -->
         <section id="hero" class="min-h-screen flex items-center bg-white">
             <div class="container mx-auto px-6 text-center">
-                <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-4 animate-fade-in-down">
-                    จาก <span class="accent-blue">42</span> การกระทำที่ซับซ้อน<br>สู่ <span class="accent-blue">3</span> การกระทำที่เรียบง่าย
-                </h1>
-                <p class="text-xl md:text-2xl text-gray-600 mb-8">
-                    นี่ไม่ใช่แค่การอัปเกรด แต่มันคือการปฏิวัติกระบวนการทำงาน CNC ทั้งระบบ
-                </p>
-                <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
-                    <a href="https://piyawat043.github.io/MakerCustoms-CNC-OS/" target="_blank" class="bg-accent-blue text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition duration-300 text-lg shadow-lg animate-pulse">
-                        🚀 สำรวจระบบควบคุมของจริง (Live System)
-                    </a>
-                     <a href="#problem" class="text-gray-700 font-semibold py-3 px-6 rounded-full hover:bg-gray-200 transition duration-300">
-                        ค้นพบเรื่องราว 👇
-                    </a>
-                </div>
-            </div>
-        </section>
-
-        <!-- The Problem -->
-        <section id="problem" class="py-20 section">
-            <div class="container mx-auto px-6">
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl md:text-4xl font-bold">ภาระที่มองไม่เห็นของระบบเดิม</h2>
-                    <p class="text-lg text-gray-600 mt-2">ในการตั้งค่างานเพียงชิ้นเดียว ผู้ใช้งานต้องเผชิญกับอะไรบ้าง?</p>
-                </div>
-                <div class="bg-white p-8 rounded-xl shadow-lg">
-                   <p class="text-center text-xl md:text-2xl mb-6">
-                        ผู้ใช้งานต้องเผชิญหน้ากับการกระทำ (Action) มากกว่า <strong class="accent-blue text-4xl">42 ครั้ง</strong> ซึ่งหมายถึง 42 ครั้งของความเครียด, การใช้สมาธิสูงสุด, และความเสี่ยงที่จะเกิดความผิดพลาด
+                <div class="w-full max-w-4xl mx-auto">
+                    <h1 class="text-4xl md:text-6xl font-bold text-gray-800 leading-tight mb-4 fade-in">ยึดงาน 1 วินาที, ตั้งค่า 3 นาที</h1>
+                    <h2 class="text-2xl md:text-4xl font-semibold text-blue-600 mb-8 fade-in" style="transition-delay: 200ms;">นี่คือมาตรฐานใหม่ของวงการ CNC</h2>
+                    <p class="text-lg text-gray-600 max-w-2xl mx-auto mb-10 fade-in" style="transition-delay: 400ms;">
+                        เราได้รวมสุดยอดนวัตกรรม 2 อย่างเข้าด้วยกัน เพื่อทำลายทุกข้อจำกัดด้านเวลาและความยุ่งยากในการผลิต
                     </p>
-                    <div class="chart-container">
-                        <canvas id="actionsChart"></canvas>
+                    <div class="flex flex-col sm:flex-row justify-center items-center gap-4 fade-in" style="transition-delay: 600ms;">
+                         <a href="#video" class="w-full sm:w-auto bg-green-500 text-white text-lg font-semibold px-8 py-4 rounded-lg hover:bg-green-600 transition transform hover:scale-105">
+                            ชมการทำงานจริง 👇
+                        </a>
+                        <a href="https://piyawat043.github.io/MakerCustoms-CNC-OS/" target="_blank" class="w-full sm:w-auto bg-gray-700 text-white text-lg font-semibold px-8 py-4 rounded-lg hover:bg-gray-800 transition transform hover:scale-105">
+                           สัมผัสระบบควบคุม
+                        </a>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- The Solution -->
-        <section id="solution" class="py-20 bg-white section">
+        <!-- Innovation Core Section -->
+        <section id="innovation" class="py-20">
             <div class="container mx-auto px-6">
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl md:text-4xl font-bold">คำตอบของเรา: Maker Customs OS (iMak)</h2>
-                    <p class="text-lg text-gray-600 mt-2">ปรัชญาของเราคือ "ถ้าการเริ่มต้นง่าย ทุกอย่างก็จะถูกปลดล็อก"</p>
+                <div class="text-center mb-16 fade-in">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">หัวใจของนวัตกรรม: การทำซ้ำแบบไร้ขีดจำกัด</h2>
+                    <p class="text-lg text-gray-600 max-w-3xl mx-auto">เราได้ทำลายข้อจำกัดที่เจ็บปวดที่สุดของวงการ CNC ทิ้งไป นั่นคือการที่ไม่ต้องทำ Jig และสามารถนำชิ้นงานกลับมาแก้ไขได้เสมอ โดยไม่จำเป็นต้องวางที่ตำแหน่งเดิม</p>
                 </div>
-                 <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div class="bg-gray-100 p-6 rounded-lg shadow-sm hover:shadow-xl transition-shadow duration-300">
-                        <h3 class="text-xl font-bold mb-2 accent-blue">สำหรับทุกคน</h3>
-                        <p>เราออกแบบระบบสำหรับผู้ใช้ทุกระดับ ตั้งแต่มือใหม่ (ด้วยระบบนำทาง), มืออาชีพ (ด้วยโหมดสร้าง Shortcut) ไปจนถึงคนที่ไม่ถนัดคอมพิวเตอร์ (ด้วยระบบปุ่มกดภายนอก)</p>
+                <div class="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-lg fade-in">
+                    <h3 class="text-2xl font-bold text-center mb-4 text-blue-600">แนวคิดหลัก: ให้ "ชิ้นงาน" เป็นจุดอ้างอิงของตัวเอง</h3>
+                    <p class="text-gray-700 mb-6">
+                        "การทำซ้ำอย่างสมบูรณ์" ของเรา ไม่ใช่การวางชิ้นงานกลับไปที่เดิม แต่มันคือ **อิสระในการวางชิ้นงานไว้ที่ไหนก็ได้บนเครื่อง** โดยระบบจะใช้ "จุดอ้างอิงอัจฉริยะ 6 จุด" ที่เราสร้างขึ้นบนตัวชิ้นงานตั้งแต่การออกแบบ เพื่อคำนวณและสร้างระบบพิกัดเสมือนขึ้นมาใหม่ ทำให้เครื่องจักรรับรู้ตำแหน่งและองศาที่แท้จริงของชิ้นงานได้อย่างแม่นยำ 100% ไม่ว่าคุณจะวางมันเอียงหรือเบี้ยวแค่ไหนก็ตาม
+                    </p>
+                    <div class="bg-blue-50 border-t-4 border-blue-500 p-6 rounded-b-lg">
+                        <h4 class="text-xl font-bold text-center mb-3">The Killer Combination:</h4>
+                        <p class="text-center text-gray-800">กระบวนการนี้ใช้เวลาเพียง **3 นาที** เพราะเราได้ผสาน 2 สุดยอดเทคโนโลยีเข้าด้วยกัน:</p>
+                        <ul class="list-none text-center mt-4 space-y-2">
+                            <li><span class="font-semibold text-green-600">1. ยึดชิ้นงานใน 1 วินาที:</span> ด้วยฐานดูดชิ้นงานแบบสุญญากาศที่เราผลิตขึ้นเอง และเป็นเพียงคนเดียวในประเทศไทย</li>
+                            <li><span class="font-semibold text-green-600">2. วัดชิ้นงานใน 3 นาที:</span> ด้วยระบบวัด 6 จุดอัตโนมัติที่ใช้งานง่ายที่สุด</li>
+                        </ul>
+                         <p class="text-center text-gray-600 mt-6 italic">ถ้าคุณนึกภาพไม่ออก... วิดีโอข้างล่างจะบอกทุกอย่าง</p>
                     </div>
-                    <div class="bg-gray-100 p-6 rounded-lg shadow-sm hover:shadow-xl transition-shadow duration-300">
-                        <h3 class="text-xl font-bold mb-2 accent-blue">ประสิทธิภาพ 25 เท่า</h3>
-                        <p>ลดจำนวนการกระทำ, เพิ่มความเร็วต่อ Action, และลดภาระของสมอง (Cognitive Load) เพื่อปลดปล่อยศักยภาพที่แท้จริงของผู้ใช้งาน</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Video Section -->
+        <section id="video" class="py-20 bg-gray-800">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16 fade-in">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">ชมการทำงานจริง: พิสูจน์ให้เห็นกับตา</h2>
+                    <p class="text-lg text-gray-300 max-w-3xl mx-auto">เรามีวิดีโอ 2 รูปแบบให้ท่านเลือกชม เพื่อให้เห็นภาพรวมทั้งหมด</p>
+                </div>
+                <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-start">
+                    <div class="fade-in">
+                        <h3 class="text-2xl font-bold text-white mb-4 text-center">การทำงานจริง (Real Work)</h3>
+                        <div class="video-short-container rounded-lg overflow-hidden shadow-2xl">
+                             <iframe src="https://www.youtube.com/embed/zHc43y5YUAQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="w-full h-full"></iframe>
+                        </div>
+                        <p class="text-gray-400 mt-4 text-center">วิดีโอสาธิตการทำงานจริงที่ดิบ, จริง, และแตกต่าง</p>
                     </div>
-                    <div class="bg-gray-100 p-6 rounded-lg shadow-sm hover:shadow-xl transition-shadow duration-300">
-                        <h3 class="text-xl font-bold mb-2 accent-blue">สถาปัตยกรรมแบบปิด</h3>
-                        <p>เรารวมฮาร์ดแวร์และซอฟต์แวร์เป็นหนึ่งเดียว (ไม่ผ่าน USB) และครอบทับ Windows เพื่อความเสถียรสูงสุดและป้องกันการคัดลอก</p>
+                    <div class="fade-in" style="transition-delay: 200ms;">
+                        <h3 class="text-2xl font-bold text-white mb-4 text-center">ภาพรวม และฐานดูดสุญญากาศ</h3>
+                        <div class="video-container">
+                             <iframe src="https://www.youtube.com/embed/aBZj-pUKd8U" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                        <p class="text-gray-400 mt-4 text-center">วิดีโอสาธิตฉบับเต็ม พร้อมภาพรวมระบบฐานดูดสุญญากาศ</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gallery Section -->
+        <section id="gallery" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16 fade-in">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">ภาพจากของจริง</h2>
+                    <p class="text-lg text-gray-600 max-w-3xl mx-auto">ทุกอย่างที่คุณเห็น ถูกสร้างและใช้งานจริงในเวิร์คช็อปของเรา (คลิกที่ภาพเพื่อขยาย)</p>
+                </div>
+
+                <!-- Hardware Gallery -->
+                <div class="mb-16 fade-in">
+                    <h3 class="text-2xl font-semibold mb-8 text-center">โซน 1: อุปกรณ์และเครื่องจักรจริง</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="gallery-item"><img src="hwimg4.png" alt="เครื่องจริง 1" class="w-full h-64 object-contain cursor-pointer"></div>
+                        <div class="gallery-item"><img src="hwimg2.png" alt="เครื่องจริง 2" class="w-full h-64 object-contain cursor-pointer"></div>
+                        <div class="gallery-item"><img src="hwimg5.png" alt="เครื่องจริง 3" class="w-full h-64 object-contain cursor-pointer"></div>
+                    </div>
+                </div>
+
+                <!-- UI/UX Gallery -->
+                <div class="fade-in">
+                    <h3 class="text-2xl font-semibold mb-8 text-center">โซน 2: ส่วนติดต่อผู้ใช้และกระบวนการ</h3>
+                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+                        <div class="gallery-item"><img src="uiux1.png" alt="UIUX 1" class="w-full h-64 object-contain cursor-pointer"></div>
+                        <div class="gallery-item"><img src="uiux2.png" alt="UIUX 2" class="w-full h-64 object-contain cursor-pointer"></div>
+                        <div class="gallery-item"><img src="uiux3.png" alt="UIUX 3" class="w-full h-64 object-contain cursor-pointer"></div>
+						<div class="gallery-item"><img src="uiux4.png" alt="UIUX 4" class="w-full h-64 object-contain cursor-pointer"></div>
+						<div class="gallery-item"><img src="uiux5.png" alt="UIUX 5" class="w-full h-64 object-contain cursor-pointer"></div>
+						<div class="gallery-item"><img src="uiux6.png" alt="UIUX 6" class="w-full h-64 object-contain cursor-pointer"></div>
                     </div>
                 </div>
             </div>
         </section>
         
-        <!-- The Impact -->
-        <section id="impact" class="py-20 section">
+        <!-- Vision Section -->
+        <section id="vision" class="py-20">
             <div class="container mx-auto px-6">
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl md:text-4xl font-bold">ผลกระทบ 25 เท่า: มากกว่าความเร็ว คือการปฏิวัติ 7 ด้าน</h2>
+                 <div class="text-center mb-16 fade-in">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">มากกว่าเครื่องจักร: จิตวิญญาณและแรงบันดาลใจ</h2>
+                    <p class="text-lg text-gray-600 max-w-3xl mx-auto">เราไม่ได้สร้างแค่นวัตกรรม แต่เรากำลังสร้างเครื่องมือเพื่อปลดปล่อยศักยภาพของมนุษย์ โดยยืนอยู่บนหลักการที่ยิ่งใหญ่</p>
                 </div>
-                 <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-                    <div>
-                        <div class="text-4xl accent-blue mb-2">🏆</div>
-                        <h4 class="font-bold text-lg">ความมั่นใจ</h4>
-                        <p>เปลี่ยนผู้ปฏิบัติงานให้เป็นผู้ควบคุมเทคโนโลยีที่มั่นใจในผลงาน</p>
+                <div class="grid md:grid-cols-2 gap-10 items-center">
+                    <div class="space-y-8 fade-in">
+                        <div class="bg-white p-6 rounded-lg shadow-lg">
+                            <p class="text-lg italic text-gray-600 mb-4">“เทคโนโลยีนั้นไม่ใช่สิ่งสำคัญ แต่สิ่งที่สำคัญก็คือการที่คุณมีศรัทธาในตัวผู้คน... แล้วจากนั้นคุณก็ให้เครื่องมือแก่พวกเขา แล้วพวกเขาจะทำในสิ่งที่ยอดเยี่ยมขึ้นมาร่วมกับคุณเอง”</p>
+                            <p class="text-right font-semibold text-gray-800">- สตีฟ จ็อบส์</p>
+                        </div>
+                         <div class="bg-white p-6 rounded-lg shadow-lg">
+                            <p class="text-lg italic text-gray-600 mb-4">“โลกที่เราสร้างขึ้นนั้น เป็นกระบวนการที่เกิดขึ้นมาจากความคิดของพวกเรา ดังนั้นโลกของเรามันไม่สามารถเปลี่ยนแปลงได้ หากเราไม่เปลี่ยนความคิด”</p>
+                            <p class="text-right font-semibold text-gray-800">- อัลเบิร์ต ไอน์สไตน์</p>
+                        </div>
                     </div>
-                     <div>
-                        <div class="text-4xl accent-blue mb-2">⏳</div>
-                        <h4 class="font-bold text-lg">เวลาในชีวิต</h4>
-                        <p>คืนเวลาที่เสียไปกับงานซ้ำซ้อนเพื่อพัฒนาทักษะที่สร้างสรรค์กว่า</p>
+                    <div class="fade-in" style="transition-delay: 200ms;">
+                        <img src="vision.png" alt="ยืนบนไหล่ของยักษ์" class="rounded-lg shadow-2xl mx-auto">
                     </div>
-                    <div>
-                        <div class="text-4xl accent-blue mb-2">🧠</div>
-                        <h4 class="font-bold text-lg">สุขภาพจิต</h4>
-                        <p>ลดความเครียดและความเหนื่อยล้าจากการทำงานที่ต้องใช้สมาธิสูงสุด</p>
-                    </div>
-                     <div>
-                        <div class="text-4xl accent-blue mb-2">🏢</div>
-                        <h4 class="font-bold text-lg">องค์กร</h4>
-                        <p>สร้างมาตรฐานการทำงานที่ชัดเจน มือใหม่เรียนรู้ได้ในเวลาอันสั้น</p>
-                    </div>
-                 </div>
+                </div>
             </div>
         </section>
 
-        <!-- The Visionary -->
-        <section id="vision" class="py-20 bg-white section">
+        <!-- Proposal Section -->
+        <section id="proposal" class="py-20 bg-white">
             <div class="container mx-auto px-6 text-center">
-                 <h2 class="text-3xl md:text-4xl font-bold mb-4">"ผมยินดีให้คุณ...ยืนบนไหล่ของผม"</h2>
-                 <p class="max-w-3xl mx-auto text-lg text-gray-600 mb-8">
-                    ผมเชื่อในความสามารถของมนุษย์ครับ สิ่งที่ทำให้ผมมาถึงจุดนี้ได้... เพราะผม.. ‘ยืนบนไหล่ของยักษ์’ พวกยักษ์..ผลักดันผม ให้สร้างเครื่องมือนี้ขึ้นมา เพราะถ้ามนุษย์มีเครื่องมือที่ดี... พวกเขาจะไปได้ไกล.. ไกลกว่าที่ตัวเองเคยคิดไว้ด้วยซ้ำ ผมยินดีให้คุณ.. ‘ยืนบนไหล่ของผม’ ด้วยเครื่องมือนี้.. มันจะปลดล็อกศักยภาพ และผลักดันคุณ...ให้ก้าวไปไกลกว่าเดิม
-                 </p>
-                 <p class="font-bold">ปิยวัฒน์ ทองจันทร์ (ไบรอั้น)</p>
-                 <p class="text-sm text-gray-500">ผู้พัฒนา Maker Customs OS</p>
+                <div class="max-w-3xl mx-auto fade-in">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">ข้อเสนอความร่วมมือ (ระยะที่ 1)</h2>
+                    <p class="text-lg text-gray-600 mb-10">นี่ไม่ใช่แค่การขอเงินสนับสนุน แต่เป็นการลงทุนร่วมกันในโปรเจกต์ทดลอง เพื่อพิสูจน์ศักยภาพและประเมินความเป็นไปได้ในการทำงานร่วมกันในระยะยาว</p>
+                    <div class="bg-blue-50 border-l-4 border-blue-500 p-8 rounded-r-lg text-left space-y-6">
+                        <div>
+                            <h3 class="text-xl font-bold text-blue-800">เป้าหมายโครงการ (3-4 เดือน)</h3>
+                            <ul class="list-disc list-inside text-gray-700 mt-2">
+                                <li>พัฒนาระบบ "สอนตัวเองได้" ให้เสร็จสมบูรณ์</li>
+                                <li>สร้างเครื่องต้นแบบสาธิตที่ทำงานได้ครบทุกฟังก์ชัน</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-blue-800">งบประมาณที่ต้องการสนับสนุน</h3>
+                            <p class="text-2xl font-bold text-blue-600 mt-2">500,000 บาท</p>
+                        </div>
+                         <div>
+                            <h3 class="text-xl font-bold text-blue-800">ข้อเสนอเชิงกลยุทธ์</h3>
+                            <p class="text-gray-700 mt-2">ผมอยากให้ทางไทยซัมมิทเป็นผู้จัดการเรื่องการคุ้มครองทรัพย์สินทางปัญญา และมีชื่อร่วมในสิทธิบัตร เพื่อเป็น "เกราะป้องกัน" ให้อนาคตของเทคโนโลยีไทยชิ้นนี้</p>
+                        </div>
+                        <div class="border-t border-blue-200 mt-6 pt-6">
+                             <h3 class="text-xl font-bold text-blue-800">บทบาทและคำมั่นสัญญาของผม</h3>
+                             <p class="text-gray-700 mt-2">ถ้าในอนาคตเราได้ทำงานร่วมกันอย่างจริงจัง ผมขอบอกตรงนี้ว่า ผมจะรับฟังทุกด้าน ทุกอย่างที่ไทยซัมมิทจัดการ ผมจะไม่ขัด ในส่วนของผม ผมจะวิเคราะห์ว่าปัญหาจะมาจากทางไหนและจะป้องกันไม่ให้มันเกิดขึ้น นี่คือหน้าที่และสิ่งที่ผมถนัดครับ</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
         
-        <!-- The Proposal -->
-        <section id="proposal" class="py-20 section">
-             <div class="container mx-auto px-6">
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl md:text-4xl font-bold">ข้อเสนอความร่วมมือ (Phase 1)</h2>
-                    <p class="text-lg text-gray-600 mt-2">นี่ไม่ใช่แค่การขอทุน แต่คือการเสนอ "ความเป็นหุ้นส่วน" เพื่อสร้างอนาคตร่วมกัน</p>
+        <!-- Founder Section -->
+        <section id="founder" class="py-20">
+             <div class="container mx-auto px-6 text-center">
+                <div class="max-w-2xl mx-auto fade-in">
+                    <img src="founder.png" alt="ปิยวัฒน์ ทองจันทร์ (ไบรอั้น)" class="w-32 h-32 rounded-full mx-auto mb-6 shadow-lg">
+                    <h2 class="text-3xl font-bold">ปิยวัฒน์ ทองจันทร์ (ไบรอั้น)</h2>
+                    <p class="text-lg text-gray-600 mb-4">ผู้สร้างและผู้ก่อตั้ง, Maker Customs OS</p>
+                    <div class="bg-white p-8 rounded-lg shadow-md text-left space-y-6">
+                         <blockquote class="border-l-4 border-red-500 pl-4 italic text-gray-800 text-lg">
+                            "ผมจะถ่ายทอดภูมิปัญญาทั้งหมดตามเจตนาที่บริสุทธิ์ เพราะผมไม่รู้ว่าผมจะอยู่ได้นานแค่ไหน และประเทศก็รอไม่ได้...มันต้องก้าวไปข้างหน้า"
+                         </blockquote>
+                         <blockquote class="border-l-4 border-gray-300 pl-4 italic text-gray-600">
+                            “ผมพูดกับทุกคนทุกระดับเหมือนกันหมด ไม่ว่าคน ๆ นั้นจะเป็นคนเก็บขยะหรือจะเป็นอธิการบดีของโรงเรียนก็ตามที”
+                            <cite class="block text-right not-italic font-semibold text-gray-700 mt-2">- อัลเบิร์ต ไอน์สไตน์ (ตามเจตนารมณ์)</cite>
+                          </blockquote>
+                    </div>
                 </div>
-                 <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8">
-                     <div class="grid md:grid-cols-2 gap-8">
-                        <div>
-                            <h4 class="text-xl font-bold accent-blue mb-3">เป้าหมายโครงการ</h4>
-                            <ul class="list-disc list-inside space-y-2">
-                                <li>พัฒนา "ระบบที่สอนตัวเองได้" ให้สมบูรณ์</li>
-                                <li>สร้าง "เครื่องต้นแบบสาธิต" ที่ทำงานได้ครบทุกฟังก์ชัน</li>
-                                <li>พิสูจน์แนวคิดและประเมินความเป็นไปได้ในการทำงานร่วมกัน</li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h4 class="text-xl font-bold accent-blue mb-3">สิ่งที่ต้องการ</h4>
-                             <ul class="list-disc list-inside space-y-2">
-                                <li>เงินทุนสนับสนุน **500,000 บาท**</li>
-                                 <li>ระยะเวลาโครงการ **3-4 เดือน**</li>
-                                 <li>การจัดการด้านสิทธิบัตรโดยไทยซัมมิท เพื่อเป็นเกราะป้องกันเทคโนโลยี</li>
-                            </ul>
-                        </div>
-                     </div>
-                      <div class="mt-8 border-t pt-6">
-                          <h4 class="text-xl font-bold accent-blue mb-3">ข้อความจากผู้สร้าง</h4>
-                          <p class="text-gray-700">ผมมาจากต่างจังหวัด ไม่เคยทำงานกับองค์กรใหญ่ สไตล์การพูดหรือการทำงานของผมอาจจะแตกต่างไปบ้าง แต่ผมยินดีและพร้อมที่จะรับฟังและปรับปรุงเสมอ เพราะสิ่งที่ผมแคร์ที่สุด คือการได้เห็นสิ่งที่ผมสร้าง มันถูกนำไปใช้จริง และเป็นประโยชน์กับทุกคน โดยเฉพาะการนำไปใช้ในงานด้านการศึกษา เพื่อให้เด็กไทยเข้าถึง CNC ได้ง่ายขึ้นครับ</p>
-                      </div>
-                 </div>
             </div>
         </section>
 
         <!-- FAQ Section -->
-        <section id="faq" class="py-20 bg-white section">
-            <div class="container mx-auto px-6">
-                <h2 class="text-3xl font-bold text-center mb-12">คำถามที่พบบ่อย (FAQ)</h2>
-                <div class="max-w-3xl mx-auto space-y-4" id="faq-container">
-                    <!-- FAQ items will be inserted here by JS -->
-                </div>
+        <section id="faq" class="py-20 bg-white">
+            <div class="container mx-auto px-6 max-w-4xl">
+                 <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 fade-in">คำถามที่พบบ่อย (FAQ)</h2>
+                 <div class="space-y-4 fade-in">
+                    <!-- FAQ Item 1 -->
+                    <div class="faq-item bg-gray-50 rounded-lg shadow">
+                        <button class="faq-question flex justify-between items-center w-full p-6 text-left font-semibold text-lg">
+                            <span>ใช้จอยเกมจริงเหรอ? มันทนทานแค่ไหน?</span>
+                            <span class="transform transition-transform duration-300">▼</span>
+                        </button>
+                        <div class="faq-answer overflow-hidden max-h-0 transition-all duration-500 ease-in-out">
+                            <div class="p-6 pt-0 text-gray-600">
+                                <p>ใช่ครับ เราใช้จอยเกมที่ถูกพัฒนามาอย่างต่อเนื่องในอุตสาหกรรมเกม ซึ่งปัจจุบันมีคุณภาพสูงและราคาเข้าถึงได้ เรามีให้เลือกหลายระดับคุณภาพ ตั้งแต่เกรดสำหรับนัก DIY ไปจนถึงเกรดสำหรับอุตสาหกรรมที่ต้องการความทนทานสูงสุด เพื่อให้เหมาะสมกับงบประมาณและความต้องการของลูกค้าแต่ละรายครับ</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- FAQ Item 2 -->
+                    <div class="faq-item bg-gray-50 rounded-lg shadow">
+                        <button class="faq-question flex justify-between items-center w-full p-6 text-left font-semibold text-lg">
+                            <span>ถ้าไม่เคยใช้ CNC มาก่อน จะใช้ระบบนี้ได้ไหม?</span>
+                            <span class="transform transition-transform duration-300">▼</span>
+                        </button>
+                        <div class="faq-answer overflow-hidden max-h-0 transition-all duration-500 ease-in-out">
+                            <div class="p-6 pt-0 text-gray-600">
+                               <p>ใช้ได้แน่นอน และง่ายกว่าระบบทั่วไปมากครับ เพราะเราออกแบบโดยคิดถึงผู้ใช้ใหม่เป็นอันดับแรก ทุกครั้งที่เลื่อนเมาส์ไปที่ปุ่ม จะมีภาพและวิดีโอแนะนำขึ้นมาทันที ระบบจะนำทางคุณไปทีละขั้นตอน เมื่อคุณทำตามเสร็จ ระบบจะรู้และนำทางไปสู่ขั้นตอนต่อไปเองโดยอัตโนมัติ เราตัดสิ่งที่ไม่จำเป็นออกทั้งหมด เหลือแต่แก่นแท้ของการทำงานจริงๆ ครับ</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- FAQ Item 3 -->
+                    <div class="faq-item bg-gray-50 rounded-lg shadow">
+                        <button class="faq-question flex justify-between items-center w-full p-6 text-left font-semibold text-lg">
+                            <span>ระบบนี้เหมาะกับมืออาชีพที่ต้องการความเร็วด้วยหรือไม่?</span>
+                            <span class="transform transition-transform duration-300">▼</span>
+                        </button>
+                        <div class="faq-answer overflow-hidden max-h-0 transition-all duration-500 ease-in-out">
+                            <div class="p-6 pt-0 text-gray-600">
+                                <p>แน่นอนครับ เราใส่ใจมืออาชีพเป็นอย่างยิ่ง เมื่อผู้ใช้คุ้นเคยกับระบบแล้ว จะสามารถเข้าสู่ "โหมดมืออาชีพ" ซึ่งจะตัดแอนิเมชันที่ไม่จำเป็นออกไปทั้งหมด และสามารถสร้างปุ่มลัดหรือเมนูลัดของตัวเองได้ (เช่น คลิกขวา 2 ครั้งเพื่อเรียกฟังก์ชัน) เพื่อให้ทุกอย่างลื่นไหล รวดเร็ว และตอบสนองต่อความต้องการเฉพาะตัวได้อย่างสมบูรณ์แบบ</p>
+                            </div>
+                        </div>
+                    </div>
+                 </div>
             </div>
         </section>
     </main>
 
-    <footer class="bg-gray-800 text-white py-6">
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-10">
         <div class="container mx-auto px-6 text-center">
-            <p>&copy; 2025 iMak (Maker Customs OS) by Piyawat Thongchan. All Rights Reserved.</p>
+            <img src="logo_maker_customs.png" alt="Maker Customs Logo" class="h-16 mx-auto mb-4">
+            <p class="mb-4">สร้างสรรค์และพัฒนาโดย ปิยวัฒน์ ทองจันทร์ (ไบรอั้น)</p>
+            <p class="text-gray-400">&copy; 2025 Maker Customs. สงวนลิขสิทธิ์</p>
         </div>
     </footer>
     
+    <!-- Modal for Image Gallery -->
+    <div id="imageModal" class="modal fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 opacity-0 pointer-events-none">
+        <div class="bg-white p-2 rounded-lg max-w-4xl max-h-full">
+            <img id="modalImage" src="" alt="ขยายภาพ" class="max-w-full max-h-[90vh] object-contain">
+        </div>
+        <button id="closeModal" class="absolute top-4 right-4 text-white text-4xl">&times;</button>
+    </div>
+
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Intersection Observer for scroll animations
-            const sections = document.querySelectorAll('.section');
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                    }
-                });
-            }, {
-                threshold: 0.1
-            });
-
-            sections.forEach(section => {
-                observer.observe(section);
-            });
-
-            // Chart.js implementation
-            const ctx = document.getElementById('actionsChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['ระบบ iMak', 'ระบบเดิม'],
-                    datasets: [{
-                        label: 'จำนวน Action โดยประมาณ',
-                        data: [3, 42],
-                        backgroundColor: [
-                            'rgba(59, 130, 246, 0.7)',
-                            'rgba(239, 68, 68, 0.7)'
-                        ],
-                        borderColor: [
-                            'rgba(59, 130, 246, 1)',
-                            'rgba(239, 68, 68, 1)'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                             callbacks: {
-                                label: function(context) {
-                                    return ` ${context.raw} ครั้ง`;
-                                }
+        document.addEventListener('DOMContentLoaded', function() {
+            // FAQ Accordion
+            const faqItems = document.querySelectorAll('.faq-item');
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                const answer = item.querySelector('.faq-answer');
+                const icon = question.querySelector('span:last-child');
+                question.addEventListener('click', () => {
+                    const isOpen = answer.style.maxHeight && answer.style.maxHeight !== '0px';
+                    faqItems.forEach(otherItem => {
+                        if (otherItem !== item) {
+                            otherItem.querySelector('.faq-answer').style.maxHeight = '0px';
+                            if(otherItem.querySelector('.faq-question span:last-child')) {
+                                otherItem.querySelector('.faq-question span:last-child').style.transform = 'rotate(0deg)';
                             }
                         }
-                    },
-                    scales: {
-                        x: {
-                            beginAtZero: true,
-                             ticks: {
-                                font: {
-                                    family: "'Sarabun', sans-serif",
-                                }
-                            }
-                        },
-                        y: {
-                             ticks: {
-                                font: {
-                                    family: "'Sarabun', sans-serif",
-                                    size: 14
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-
-            // FAQ Data and Logic
-            const faqData = [
-                {
-                    question: "ระบบนี้เหมาะสำหรับใคร? มือใหม่? มืออาชีพ? หรือคนที่ไม่ถนัดคอมพิวเตอร์?",
-                    answer: "เราใส่ใจคนทุกกลุ่มอย่างเท่าเทียมกันครับ นี่คือหัวใจที่แท้จริงของเรา<br><ul><li class='ml-4 list-disc'><b>สำหรับมือใหม่:</b> เราทำให้ 'การเริ่มต้น' ง่ายที่สุด ด้วยภาพ, วิดีโอ, และระบบนำทาง</li><li class='ml-4 list-disc'><b>สำหรับมืออาชีพ:</b> ระบบจะอนุญาตให้คุณเข้าสู่ 'โหมดมืออาชีพ' ที่ลื่นไหล และให้อิสระในการสร้าง Shortcut ของตัวเอง</li><li class='ml-4 list-disc'><b>สำหรับคนที่ไม่คุ้นเคยกับคอมพิวเตอร์:</b> เรามีระบบปุ่มกดภายนอก ที่สามารถสร้างขึ้นมาโดยเฉพาะได้ เพราะเราเชื่อว่า 'เทคโนโลยีที่ดีต้องเป็นมิตรกับทุกคน'</li></ul>"
-                },
-                {
-                    question: "ระบบนี้แตกต่างจาก CNC ทั่วไปอย่างไร?",
-                    answer: "หัวใจของเราคือปรัชญา 'ถ้าการเริ่มต้นง่าย ทุกอย่างก็จะถูกปลดล็อก' เราทุ่มเททั้งหมดเพื่อทำลายกำแพงความซับซ้อนในการเริ่มต้น (Setup) และเมื่อมันง่าย... มันจะปลดปล่อยความคิดสร้างสรรค์ทั้งหมดออกมา"
-                },
-                 {
-                    question: "ทำไมถึงใช้จอยเกมควบคุม? มันจะทนทานเหรอ?",
-                    answer: "เพราะจอยเกมคือเทคโนโลยีที่ถูกพัฒนาจนมีคุณภาพสูงและเข้าถึงง่าย เรามีตัวเลือกให้ตามความต้องการและงบประมาณ ตั้งแต่เกรดสำหรับนัก DIY ไปจนถึงเกรดสำหรับโรงงานอุตสาหกรรม"
-                },
-                {
-                    question: "เบื้องหลังเทคโนโลยีนี้มีอะไรพิเศษ?",
-                    answer: "เราสร้าง 'สถาปัตยกรรมแบบปิดที่สมบูรณ์' โดยรวมฮาร์ดแวร์และซอฟต์แวร์เข้าเป็นหนึ่งเดียวกันโดยไม่ผ่าน USB เพื่อความเสถียรสูงสุดและป้องกันการคัดลอก จากนั้นเราครอบและปรับแต่ง Windows ใหม่ทั้งหมด เพื่อให้พลังทั้งหมดของคอมพิวเตอร์ถูกใช้เพื่องาน CNC เพียงอย่างเดียว"
-                },
-                {
-                    question: "PiyawatZone หรือปุ่ม 'ยืนบนไหล่ของผม' คืออะไร?",
-                    answer: "มันคือ 'คลังสมอง' และ 'หัวใจ' ของโปรเจกต์นี้ เป็นฐานความรู้ที่มีชีวิต ที่รวบรวมเทคนิคและปรัชญาทั้งหมดของผมในรูปแบบวิดีโอ มันคือคำมั่นสัญญาว่าผมจะมอบทุกสิ่งที่ผมรู้ให้กับคุณ"
-                },
-                 {
-                    question: "เป้าหมายสูงสุดของโปรเจกต์นี้คืออะไร?",
-                    answer: "คือการ 'สร้างมรดก' ที่จะคงอยู่ตลอดไป ผมต้องการสร้างเครื่องมือและองค์ความรู้ที่จะช่วยยกระดับวงการอุตสาหกรรมของประเทศ และทำให้เด็กไทยและคนรุ่นใหม่ได้เข้าถึงเทคโนโลยีที่ดีที่สุด"
-                }
-            ];
-
-            const faqContainer = document.getElementById('faq-container');
-            faqData.forEach(item => {
-                const faqItem = document.createElement('div');
-                faqItem.className = 'border border-gray-200 rounded-lg';
-                
-                const questionButton = document.createElement('button');
-                questionButton.className = 'faq-question w-full text-left p-4 font-semibold focus:outline-none';
-                questionButton.textContent = item.question;
-                
-                const answerDiv = document.createElement('div');
-                answerDiv.className = 'faq-answer hidden p-4 border-t border-gray-200 text-gray-700';
-                answerDiv.innerHTML = item.answer;
-                
-                faqItem.appendChild(questionButton);
-                faqItem.appendChild(answerDiv);
-                faqContainer.appendChild(faqItem);
-                
-                questionButton.addEventListener('click', () => {
-                    questionButton.classList.toggle('open');
-                    const answer = questionButton.nextElementSibling;
-                    if (answer.classList.contains('hidden')) {
-                        answer.classList.remove('hidden');
+                    });
+                    if (isOpen) {
+                        answer.style.maxHeight = '0px';
+                        if(icon) icon.style.transform = 'rotate(0deg)';
                     } else {
-                        answer.classList.add('hidden');
+                        answer.style.maxHeight = answer.scrollHeight + 'px';
+                        if(icon) icon.style.transform = 'rotate(180deg)';
                     }
                 });
+            });
+
+            // Fade-in on scroll
+            const faders = document.querySelectorAll('.fade-in');
+            const appearOptions = {
+                threshold: 0.1,
+                rootMargin: "0px 0px -50px 0px"
+            };
+            const appearOnScroll = new IntersectionObserver(function(entries, appearOnScroll) {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) {
+                        return;
+                    } else {
+                        entry.target.classList.add('is-visible');
+                        appearOnScroll.unobserve(entry.target);
+                    }
+                });
+            }, appearOptions);
+
+            faders.forEach(fader => {
+                appearOnScroll.observe(fader);
+            });
+            
+            // Image Gallery Modal
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const closeModal = document.getElementById('closeModal');
+            const galleryItems = document.querySelectorAll('.gallery-item');
+
+            galleryItems.forEach(item => {
+                const img = item.querySelector('img');
+                if(img){
+                    item.addEventListener('click', function() {
+                        modal.classList.remove('opacity-0', 'pointer-events-none');
+                        modalImg.src = img.src;
+                    });
+                }
+            });
+
+            const closeTheModal = () => {
+                modal.classList.add('opacity-0', 'pointer-events-none');
+            };
+
+            closeModal.addEventListener('click', closeTheModal);
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeTheModal();
+                }
             });
         });
     </script>
